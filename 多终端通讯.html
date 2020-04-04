@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>多终端通讯</title>
+</head>
+
+<body>
+    <ul id="content"></ul>
+    <input type="text" id="msg">
+    <button onclick="sendClick()">发送</button>
+    <script>
+        var ws = new WebSocket('ws://localhost:3000')
+        // var inputMsg=document.getElementById('msg')
+        // var con=document.getElementById('content')
+        ws.onopen = function (res) {
+            console.log('连接成功')
+            console.log(res)
+        }
+        ws.onmessage=function(msg){
+            console.log(msg)
+            content.innerHTML+='<li>'+msg.data+'</li>'
+        }
+        function sendClick(){
+            console.log(msg.value)
+            ws.send(msg.value)
+        }
+    </script>
+</body>
+
+</html>
