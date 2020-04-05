@@ -10,14 +10,79 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
     <div class="container">
         <h1>express+websocket.io聊天室</h1>
+        <div class="row login" id="pp">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label for="userName">用户名:</label>
+                    <input type="text" class="form-control" id="userName" placeholder="用户昵称">
+                </div>
+                <button type="submit" onclick="sendClick()" class="btn btn-default">提交</button>
+            </div>
+        </div>
+        <div class="room">
+            <div class="row">
+                <div class="col-md-12 col-xs-12 container-body">
+                </div>
+            </div>
+            <div class="row footer">
+                <div class="col-md-12">
+                    <textarea class="form-control" rows="3"></textarea>
+                    <button class="btn btn-success sendBtn">提交</button>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket;
+
+        function cateTel(data) {
+            var str = `<div class="body-item">
+                        <p><span class="label label-info">`+data.user+`</span></p>
+                        <p><span class="alert alert-danger msg">`+data.news+`</span></p>
+                    </div>`
+            return str;
+        }
+
+        function sendClick() {
+            var username = $.trim($('#userName').val());
+            if (username == '') {
+                return;
+            }
+            $('.login').hide();
+            $('.room').show();
+            // 原生
+            // pp.style.display="none"
+            // pp.className ="none"   
+            // pp.classList.add('aaa') 
+            socket = io('http://localhost:3000');
+            socket.on('connect', function () {
+                console.log('连接成功')
+                socket.emit('login', username)
+            });
+            // 接受服务端信息
+            socket.on('msg', function (data) {
+                console.log(data)
+              var tpl=cateTel(data)
+                $('.container-body').append(tpl)
+
+            });
+            socket.on('disconnect', function () {
+                console.log('断开连接')
+            });
+        }
+        $('.sendBtn').on('click', function () {
+            socket.emit('send', $('textarea')[0].value)
+        })
+    </script>
 </body>
 
 </html>

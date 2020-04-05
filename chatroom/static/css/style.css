@@ -1,3 +1,26 @@
-h1 {
-    color: red;
+.login {
+    display: block;
+}
+.room {
+    display: none;
+}
+.container-body {
+    height: 400px;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+}
+.msg {
+    padding: 8px;
+}
+.body-item {
+    margin: 6px 0 14px;
+}
+.footer {
+    margin-top: 10px;
+}
+.footer button {
+    margin-top: 7px;
+}
+.footer .col-md-12 {
+    padding: 0;
 }
