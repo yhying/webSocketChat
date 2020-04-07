@@ -15,7 +15,7 @@
 
 <body>
     <div class="container">
-        <h1>express+websocket.io聊天室</h1>
+        <h1>express+websocket.io聊天室<span class="totalCount"></span></h1>
         <div class="row login" id="pp">
             <div class="col-md-12">
                 <div class="form-group">
@@ -43,11 +43,11 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket;
-
-        function cateTel(data) {
+        function cateTel(data, flag) {
+            console.log(flag)
             var str = `<div class="body-item">
-                        <p><span class="label label-info">`+data.user+`</span></p>
-                        <p><span class="alert alert-danger msg">`+data.news+`</span></p>
+                <p><span class="label label-info">${flag?'我':data.user}</span></p>
+                        <p><span class="alert alert-${flag?'success':'danger'} msg">${data.news}</span></p>
                     </div>`
             return str;
         }
@@ -71,16 +71,24 @@
             // 接受服务端信息
             socket.on('msg', function (data) {
                 console.log(data)
-              var tpl=cateTel(data)
+                var flag = username == data.user
+                var tpl = cateTel(data, flag)
                 $('.container-body').append(tpl)
-
+            });
+            // 更新在线人数
+            socket.on('count', function (data) {
+                $('.totalCount').html((data)+'人')
             });
             socket.on('disconnect', function () {
                 console.log('断开连接')
             });
         }
         $('.sendBtn').on('click', function () {
+            if ($('textarea')[0].value == '') {
+                return
+            }
             socket.emit('send', $('textarea')[0].value)
+            $('textarea')[0].value = ' '
         })
     </script>
 </body>
